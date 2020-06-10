@@ -57,7 +57,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(irate(nginx_connections_processed_total{stage=\"any\"}[5m])) by (stage)",
+              "expr": "sum(irate(nginx_connections_handled{stage=\"any\"}[5m])) by (stage)",
               "hide": false,
               "interval": "",
               "intervalFactor": 10,
@@ -140,7 +140,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(nginx_connections_current) by (state)",
+              "expr": "sum(nginx_connections_active) by (state)",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "{{state}}",
@@ -222,7 +222,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(irate(nginx_connections_processed_total{stage!=\"any\"}[5m])) by (stage)",
+              "expr": "sum(irate(nginx_connections_handled{stage!=\"any\"}[5m])) by (stage)",
               "hide": false,
               "interval": "",
               "intervalFactor": 10,
@@ -356,7 +356,7 @@
     }
   ],
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {

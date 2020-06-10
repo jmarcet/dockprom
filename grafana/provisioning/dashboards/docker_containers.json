@@ -7,7 +7,7 @@
   ],
   "style": "dark",
   "timezone": "browser",
-  "editable": true,
+  "editable": false,
   "hideControls": false,
   "sharedCrosshair": true,
   "rows": [
@@ -403,7 +403,7 @@
           },
           "targets": [
             {
-              "expr": "(node_filesystem_size_bytes{fstype=\"aufs\"} - node_filesystem_free_bytes{fstype=\"aufs\"}) / node_filesystem_size_bytes{fstype=\"aufs\"}  * 100",
+              "expr": "(node_filesystem_size_bytes{mountpoint=\"/storage\"} - node_filesystem_free_bytes{mountpoint=\"/storage\"}) / node_filesystem_size_bytes{mountpoint=\"/storage\"}  * 100",
               "interval": "30s",
               "intervalFactor": 1,
               "legendFormat": "",
@@ -821,9 +821,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -910,9 +910,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -991,9 +991,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -1080,9 +1080,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -1102,7 +1102,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (name) (rate(container_network_receive_bytes_total{image!=\"\",container_label_org_label_schema_group=\"\"}[1m]))",
+              "expr": "sum by (name) (rate(container_network_receive_bytes_total{image!=\"\",container_label_org_label_schema_group=\"\"}[50s]))",
               "intervalFactor": 10,
               "legendFormat": "{{ name }}",
               "metric": "container_network_receive_bytes_total",
@@ -1125,7 +1125,7 @@
           },
           "yaxes": [
             {
-              "format": "bytes",
+              "format": "kbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1161,9 +1161,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -1183,7 +1183,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (name) (rate(container_network_transmit_bytes_total{image!=\"\",container_label_org_label_schema_group=\"\"}[1m]))",
+              "expr": "sum by (name) (rate(container_network_transmit_bytes_total{image!=\"\",container_label_org_label_schema_group=\"\"}[50s]))",
               "intervalFactor": 10,
               "legendFormat": "{{ name }}",
               "metric": "container_network_transmit_bytes_total",
@@ -1206,7 +1206,7 @@
           },
           "yaxes": [
             {
-              "format": "bytes",
+              "format": "kbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1228,7 +1228,7 @@
     }
   ],
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {

@@ -7,7 +7,7 @@
   ],
   "style": "dark",
   "timezone": "browser",
-  "editable": true,
+  "editable": false,
   "hideControls": false,
   "sharedCrosshair": true,
   "rows": [
@@ -477,7 +477,7 @@
           },
           "targets": [
             {
-              "expr": "sum(node_filesystem_free_bytes{fstype=\"aufs\"})",
+              "expr": "sum(node_filesystem_free_bytes{mountpoint=\"/mnt/btrfs\"})",
               "interval": "30s",
               "intervalFactor": 1,
               "legendFormat": "",
@@ -796,9 +796,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -885,9 +885,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -1011,9 +1011,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -1130,9 +1130,9 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -1227,7 +1227,7 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
             "min": true,
             "rightSide": false,
@@ -1325,7 +1325,7 @@
           "legend": {
             "alignAsTable": true,
             "avg": true,
-            "current": false,
+            "current": true,
             "max": true,
             "min": true,
             "show": true,
@@ -1399,7 +1399,7 @@
     }
   ],
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {

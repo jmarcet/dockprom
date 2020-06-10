@@ -6,7 +6,7 @@
   ],
   "style": "dark",
   "timezone": "browser",
-  "editable": true,
+  "editable": false,
   "hideControls": false,
   "sharedCrosshair": true,
   "panels": [
@@ -3370,7 +3370,7 @@
     }
   ],
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
