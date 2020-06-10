@@ -1,12 +1,4 @@
-version: '2.1'
-
-networks:
-  monitor-net:
-    driver: bridge
-
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
+version: '2.4'
 
 services:
 
@@ -15,7 +7,7 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus:/etc/prometheus
-      - prometheus_data:/prometheus
+      - /opt/monitoring/prometheus:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -23,29 +15,38 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
-    restart: unless-stopped
+    restart: on-failure
     expose:
       - 9090
-    networks:
-      - monitor-net
+    mac_address: ${MAC_GRAFANA}
+    ports:
+      - '127.0.0.1:9090:9090'
     labels:
       org.label-schema.group: "monitoring"
+    cpus: 1
+    mem_limit: 512mb
+    memswap_limit: 512mb
+    healthcheck:
+      test: wget -S http://127.0.0.1:9090/ 2>&1 | grep -q 'HTTP/1.1 302 Found'
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
-  alertmanager:
-    image: prom/alertmanager:v0.21.0
-    container_name: alertmanager
-    volumes:
-      - ./alertmanager:/etc/alertmanager
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-    restart: unless-stopped
-    expose:
-      - 9093
-    networks:
-      - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
+  #alertmanager:
+  #  image: prom/alertmanager:v0.21.0
+  #  container_name: alertmanager
+  #  volumes:
+  #    - ./alertmanager:/etc/alertmanager
+  #  command:
+  #    - '--config.file=/etc/alertmanager/config.yml'
+  #    - '--storage.path=/alertmanager'
+  #  restart: unless-stopped
+  #  expose:
+  #    - 9093
+  #  networks:
+  #    - monitor-net
+  #  labels:
+  #    org.label-schema.group: "monitoring"
 
   nodeexporter:
     image: prom/node-exporter:v1.0.1
@@ -59,75 +60,137 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: unless-stopped
+    restart: on-failure
     expose:
       - 9100
-    networks:
-      - monitor-net
+    mac_address: ${MAC_NODEEXPORTER}
     labels:
       org.label-schema.group: "monitoring"
+    cpus: 1
+    mem_limit: 256mb
+    memswap_limit: 256mb
+    healthcheck:
+      test: wget -S http://127.0.0.1:9100/ 2>&1 | grep -q 'HTTP/1.1 200 OK'
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.38.6
     container_name: cadvisor
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:rw
+      - /tmp/run:/var/run:rw
+      - /tmp/run/docker/containerd/containerd.sock:/run/containerd/containerd.sock:rw
       - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
-      #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
-    restart: unless-stopped
+      - /opt/docker:/var/lib/docker:ro
+    restart: on-failure
     expose:
       - 8080
-    networks:
-      - monitor-net
+    mac_address: ${MAC_CADVISOR}
+    ports:
+      - '127.0.0.1:8080:8080'
     labels:
       org.label-schema.group: "monitoring"
+    cpus: 1
+    mem_limit: 512mb
+    memswap_limit: 512mb
+    healthcheck:
+      test: wget -S http://127.0.0.1:8080/ 2>&1 | grep -q 'HTTP/1.1 307 Temporary Redirect'
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   grafana:
     image: grafana/grafana:7.3.6
     container_name: grafana
     volumes:
-      - grafana_data:/var/lib/grafana
+      - /opt/monitoring/grafana:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
-    restart: unless-stopped
+      - INFLUXDB_READ_USER=${INFLUXDB_READ_USER}
+      - INFLUXDB_READ_PASSWORD=${INFLUXDB_READ_PASSWORD}
+    restart: on-failure
     expose:
       - 3000
-    networks:
-      - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
-
-  pushgateway:
-    image: prom/pushgateway:v1.3.1
-    container_name: pushgateway
-    restart: unless-stopped
-    expose:
-      - 9091
-    networks:
-      - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
-
-  caddy:
-    image: stefanprodan/caddy
-    container_name: caddy
+    mac_address: ${MAC_PROMETHEUS}
     ports:
-      - "3000:3000"
-      - "9090:9090"
-      - "9093:9093"
-      - "9091:9091"
-    volumes:
-      - ./caddy:/etc/caddy
-    environment:
-      - ADMIN_USER=${ADMIN_USER:-admin}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
-    restart: unless-stopped
-    networks:
-      - monitor-net
+      - '127.0.0.1:3000:3000'
     labels:
       org.label-schema.group: "monitoring"
+    cpus: 1
+    mem_limit: 256mb
+    memswap_limit: 256mb
+    healthcheck:
+      test: wget -S http://127.0.0.1:3000/ 2>&1 | grep -q 'HTTP/1.1 302 Found'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  #pushgateway:
+  #  image: prom/pushgateway:v1.3.1
+  #  container_name: pushgateway
+  #  restart: on-failure
+  #  expose:
+  #    - 9091
+  #  labels:
+  #    org.label-schema.group: "monitoring"
+
+  influxdb:
+    image: influxdb
+    container_name: influxdb
+    volumes:
+      - ./influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
+      - ./influxdb/types.db:/usr/share/collectd/types.db
+      - /opt/monitoring/influxdb:/var/lib/influxdb
+    environment:
+      - INFLUX_DB=collectd
+      - INFLUXDB_READ_USER=${INFLUXDB_READ_USER}
+      - INFLUXDB_READ_PASSWORD=${INFLUXDB_READ_PASSWORD}
+    restart: on-failure
+    mac_address: ${MAC_INFLUXDB}
+    ports:
+      - '127.0.0.1:25826:25826/udp'
+    labels:
+      org.label-schema.group: "monitoring"
+    cpus: 1
+    mem_limit: 512mb
+    memswap_limit: 512mb
+    healthcheck:
+      test: wget -S http://127.0.0.1:8086/ 2>&1 | grep -q 'HTTP/1.1 404 Not Found'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginxexporter:
+    image: nginx/nginx-prometheus-exporter
+    container_name: nginxexporter
+    environment:
+      - NGINX_RETRIES=10
+      - SCRAPE_URI=${SCRAPE_URI}
+    restart: on-failure
+    mac_address: ${MAC_NGINXEXPORTER}
+    labels:
+      org.label-schema.group: "monitoring"
+    cpus: 1
+    mem_limit: 128mb
+    memswap_limit: 128mb
+    healthcheck:
+      test: wget -S http://127.0.0.1:9113/ 2>&1 | grep -q 'HTTP/1.1 200 OK'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_MONITORING}
+    driver_opts:
+      com.docker.network.bridge.name: br-monitoring
+
