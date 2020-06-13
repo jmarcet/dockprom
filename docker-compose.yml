@@ -211,6 +211,24 @@ services:
       timeout: 5s
       retries: 3
 
+  unifipoller:
+    image: golift/unifi-poller:latest
+    container_name: unifipoller
+    restart: on-failure
+    mac_address: ${MAC_UNIFI_POLLER}
+    labels:
+      org.label-schema.group: "monitoring"
+    environment:
+      - UP_INFLUXDB_DISABLE=true
+      - UP_POLLER_DEBUG=${UP_POLLER_DEBUG}
+      - UP_UNIFI_DEFAULT_USER=${UP_UNIFI_USER}
+      - UP_UNIFI_DEFAULT_PASS=${UP_UNIFI_PASS}
+      - UP_UNIFI_DEFAULT_URL=https://unifi:8443/
+      - UP_UNIFI_DYNAMIC=false
+    cpus: 1
+    mem_limit: 128mb
+    memswap_limit: 128mb
+
 networks:
   default:
     driver: bridge
