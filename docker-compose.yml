@@ -18,7 +18,7 @@ services:
     restart: on-failure
     expose:
       - 9090
-    mac_address: ${MAC_GRAFANA}
+    mac_address: ${MAC_PROMETHEUS}
     ports:
       - '127.0.0.1:9090:9090'
     labels:
@@ -111,12 +111,11 @@ services:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
-      - INFLUXDB_READ_USER=${INFLUXDB_READ_USER}
-      - INFLUXDB_READ_PASSWORD=${INFLUXDB_READ_PASSWORD}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,natel-discrete-panel,grafana-piechart-panel
     restart: on-failure
     expose:
       - 3000
-    mac_address: ${MAC_PROMETHEUS}
+    mac_address: ${MAC_GRAFANA}
     ports:
       - '127.0.0.1:3000:3000'
     labels:
