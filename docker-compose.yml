@@ -138,51 +138,6 @@ services:
   #  labels:
   #    org.label-schema.group: "monitoring"
 
-  influxdb:
-    image: influxdb
-    container_name: influxdb
-    volumes:
-      - ./influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
-      - ./influxdb/types.db:/usr/share/collectd/types.db
-      - /opt/monitoring/influxdb:/var/lib/influxdb
-    environment:
-      - INFLUX_DB=collectd
-      - INFLUXDB_READ_USER=${INFLUXDB_READ_USER}
-      - INFLUXDB_READ_PASSWORD=${INFLUXDB_READ_PASSWORD}
-    restart: on-failure
-    mac_address: ${MAC_INFLUXDB}
-    ports:
-      - '127.0.0.1:25826:25826/udp'
-    labels:
-      org.label-schema.group: "monitoring"
-    cpus: 1
-    mem_limit: 512mb
-    memswap_limit: 512mb
-    healthcheck:
-      test: wget -S http://127.0.0.1:8086/ 2>&1 | grep -q 'HTTP/1.1 404 Not Found'
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-  nginxexporter:
-    image: nginx/nginx-prometheus-exporter
-    container_name: nginxexporter
-    environment:
-      - NGINX_RETRIES=10
-      - SCRAPE_URI=${SCRAPE_URI}
-    restart: on-failure
-    mac_address: ${MAC_NGINXEXPORTER}
-    labels:
-      org.label-schema.group: "monitoring"
-    cpus: 1
-    mem_limit: 128mb
-    memswap_limit: 128mb
-    healthcheck:
-      test: wget -S http://127.0.0.1:9113/ 2>&1 | grep -q 'HTTP/1.1 200 OK'
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
   unifi:
     image: linuxserver/unifi-controller:latest
     container_name: unifi
