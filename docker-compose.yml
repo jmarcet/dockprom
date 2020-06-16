@@ -19,6 +19,9 @@ services:
     expose:
       - 9090
     mac_address: ${MAC_PROMETHEUS}
+    extra_hosts:
+      collectd: ${LAN_IP}
+      nodeexporter: ${LAN_IP}
     ports:
       - '127.0.0.1:9090:9090'
     labels:
@@ -59,18 +62,24 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.diskstats.ignored-devices=^(loop|dm-|nbd|nvme\dn\dp|sd[a-z])\d+'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc|opt/.+)($$|/)'
+      - '--collector.netclass.ignored-devices=^(bond|dummy|ifb4|ip6tnl0|lo|teql0|veth)'
+      - '--collector.netdev.device-blacklist=^(bond|dummy|ifb4|ip6tnl0|lo|teql0|veth)'
+      - '--collector.interrupts'
+      - '--collector.mountstats'
+      - '--collector.processes'
+      - '--collector.tcpstat'
+      - '--web.listen-address=${LAN_IP}:9100'
     restart: on-failure
-    expose:
-      - 9100
-    mac_address: ${MAC_NODEEXPORTER}
+    network_mode: host
     labels:
       org.label-schema.group: "monitoring"
     cpus: 1
     mem_limit: 256mb
     memswap_limit: 256mb
     healthcheck:
-      test: wget -S http://127.0.0.1:9100/ 2>&1 | grep -q 'HTTP/1.1 200 OK'
+      test: wget -S http://${LAN_IP}:9100/ 2>&1 | grep -q 'HTTP/1.1 200 OK'
       interval: 30s
       timeout: 5s
       retries: 3
