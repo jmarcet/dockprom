@@ -1,5 +1,5 @@
 global:
-  scrape_interval:     30s
+  scrape_interval:     15s
   evaluation_interval: 10s
 
   # Attach these labels to any time series or alerts when communicating with
@@ -38,6 +38,7 @@ scrape_configs:
       - targets: ['collectd:9103']
 
   - job_name: 'unifipoller'
+    scrape_interval: 5s
     static_configs:
       - targets: ['unifipoller:9130']
 
