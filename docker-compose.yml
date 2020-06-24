@@ -26,6 +26,7 @@ services:
       - '127.0.0.1:9090:9090'
     labels:
       org.label-schema.group: "monitoring"
+    cpu_shares: 256
     cpus: 1
     mem_limit: 512mb
     memswap_limit: 512mb
@@ -75,9 +76,10 @@ services:
     network_mode: host
     labels:
       org.label-schema.group: "monitoring"
+    cpu_shares: 256
     cpus: 1
-    mem_limit: 256mb
-    memswap_limit: 256mb
+    mem_limit: 64mb
+    memswap_limit: 64mb
     healthcheck:
       test: wget -S http://${LAN_IP}:9100/ 2>&1 | grep -q 'HTTP/1.1 200 OK'
       interval: 30s
@@ -101,9 +103,10 @@ services:
       - '127.0.0.1:8080:8080'
     labels:
       org.label-schema.group: "monitoring"
+    cpu_shares: 256
     cpus: 1
-    mem_limit: 512mb
-    memswap_limit: 512mb
+    mem_limit: 256mb
+    memswap_limit: 256mb
     healthcheck:
       test: wget -S http://127.0.0.1:8080/ 2>&1 | grep -q 'HTTP/1.1 307 Temporary Redirect'
       interval: 30s
@@ -129,6 +132,7 @@ services:
       - '127.0.0.1:3000:3000'
     labels:
       org.label-schema.group: "monitoring"
+    cpu_shares: 256
     cpus: 1
     mem_limit: 256mb
     memswap_limit: 256mb
@@ -166,6 +170,7 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+    cpu_shares: 256
     cpus: 1
     mem_limit: 1gb
     memswap_limit: 1gb
@@ -189,9 +194,10 @@ services:
       - UP_UNIFI_DEFAULT_PASS=${UP_UNIFI_PASS}
       - UP_UNIFI_DEFAULT_URL=https://unifi:8443/
       - UP_UNIFI_DYNAMIC=false
+    cpu_shares: 256
     cpus: 1
-    mem_limit: 128mb
-    memswap_limit: 128mb
+    mem_limit: 64mb
+    memswap_limit: 64mb
 
 networks:
   default:
