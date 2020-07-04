@@ -157,9 +157,9 @@ services:
     mac_address: ${MAC_UNIFI}
     ports:
       - '${LAN_IP}:3478:3478/udp'
+      - '${LAN_IP}:10001:10001/udp'
       - '${LAN_IP}:6789:6789'
       - '${LAN_IP}:8080:8080'
-      - '${LAN_IP}:8081:8081'
       - '${LAN_IP}:8443:8443'
       - '${LAN_IP}:8880:8880'
     volumes:
