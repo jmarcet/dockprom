@@ -17,7 +17,7 @@
   "gnetId": 11147,
   "graphTooltip": 0,
   "id": 4,
-  "iteration": 1592934848761,
+  "iteration": 1593636119185,
   "links": [],
   "panels": [
     {
@@ -3612,7 +3612,7 @@
         {
           "expr": "(rate(collectd_processes_ps_cputime_user_total[40s]) + rate(collectd_processes_ps_cputime_syst_total[40s])) / (10000*15*8)",
           "interval": "",
-          "intervalFactor": 3,
+          "intervalFactor": 1,
           "legendFormat": "{{processes}}",
           "refId": "A"
         }
@@ -5584,7 +5584,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -5614,5 +5614,5 @@
   "timezone": "browser",
   "title": "OpenWRT",
   "uid": "fLi0yXAWk",
-  "version": 57
+  "version": 59
 }
