@@ -62,6 +62,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
+      - nodeexporter:/var/lib/node_exporter
     command:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
@@ -70,6 +71,7 @@ services:
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc|opt/.+)($$|/)'
       - '--collector.netclass.ignored-devices=^(bond0|dummy0|eth[01]|eth0\.6|ifb4.+|ip6tnl0|lo|teql0|veth.+)$$'
       - '--collector.netdev.device-blacklist=^(bond0|dummy0|eth[01]|eth0\.6|ifb4.+|ip6tnl0|lo|teql0|veth.+)$$'
+      - '--collector.textfile.directory=/var/lib/node_exporter'
       - '--collector.interrupts'
       - '--collector.processes'
       - '--collector.tcpstat'
@@ -153,6 +155,24 @@ services:
   #  labels:
   #    org.label-schema.group: "monitoring"
 
+  smartmon:
+    image: galexrt/node-exporter-smartmon
+    container_name: smartmon
+    privileged: true
+    restart: on-failure
+    mac_address: ${MAC_SMARTMON}
+    labels:
+      org.label-schema.group: "monitoring"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - nodeexporter:/var/lib/node_exporter
+    #environment:
+    #  - INTERVAL=60
+    cpu_shares: 256
+    cpus: 1
+    mem_limit: 32mb
+    memswap_limit: 32mb
+
   unifi:
     image: linuxserver/unifi-controller:latest
     container_name: unifi
@@ -211,3 +231,5 @@ networks:
     driver_opts:
       com.docker.network.bridge.name: br-monitoring
 
+volumes:
+  nodeexporter:
