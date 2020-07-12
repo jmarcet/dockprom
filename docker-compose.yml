@@ -18,6 +18,9 @@ services:
     restart: on-failure
     expose:
       - 9090
+    links:
+      - 'cadvisor:_cadvisor'
+      - 'grafana:_grafana'
     mac_address: ${MAC_PROMETHEUS}
     extra_hosts:
       collectd: ${LAN_IP}

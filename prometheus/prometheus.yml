@@ -27,11 +27,11 @@ scrape_configs:
 
   - job_name: 'grafana'
     static_configs:
-      - targets: ['grafana:3000']
+      - targets: ['_grafana:3000']
 
   - job_name: 'cadvisor'
     static_configs:
-      - targets: ['cadvisor:8080']
+      - targets: ['_cadvisor:8080']
 
   - job_name: 'collectd'
     static_configs:
