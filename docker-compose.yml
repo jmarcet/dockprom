@@ -31,6 +31,7 @@ services:
       org.label-schema.group: "monitoring"
     cpu_shares: 256
     cpus: 1
+    cpuset: 2,6
     mem_limit: 512mb
     memswap_limit: 512mb
     healthcheck:
@@ -62,7 +63,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-      - nodeexporter:/var/lib/node_exporter
+      - /var/prometheus:/var/lib/node_exporter
     command:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
@@ -81,7 +82,8 @@ services:
     labels:
       org.label-schema.group: "monitoring"
     cpu_shares: 256
-    cpus: 1
+    cpus: 2
+    cpuset: 2,6
     mem_limit: 64mb
     memswap_limit: 64mb
     healthcheck:
@@ -109,6 +111,7 @@ services:
       org.label-schema.group: "monitoring"
     cpu_shares: 256
     cpus: 1
+    cpuset: 3,7,2,6
     mem_limit: 256mb
     memswap_limit: 256mb
     healthcheck:
@@ -138,6 +141,7 @@ services:
       org.label-schema.group: "monitoring"
     cpu_shares: 256
     cpus: 1
+    cpuset: 3,7
     mem_limit: 256mb
     memswap_limit: 256mb
     healthcheck:
@@ -165,11 +169,12 @@ services:
       org.label-schema.group: "monitoring"
     volumes:
       - /etc/localtime:/etc/localtime
-      - nodeexporter:/var/lib/node_exporter
+      - /var/prometheus:/var/lib/node_exporter
     #environment:
     #  - INTERVAL=60
     cpu_shares: 256
     cpus: 1
+    cpuset: 0,4
     mem_limit: 32mb
     memswap_limit: 32mb
 
@@ -194,6 +199,7 @@ services:
       - PGID=${PGID}
     cpu_shares: 256
     cpus: 1
+    cpuset: 3,7
     mem_limit: 1gb
     memswap_limit: 1gb
     healthcheck:
@@ -218,6 +224,7 @@ services:
       - UP_UNIFI_DYNAMIC=false
     cpu_shares: 256
     cpus: 1
+    cpuset: 2,6
     mem_limit: 64mb
     memswap_limit: 64mb
 
@@ -230,6 +237,3 @@ networks:
         - subnet: ${SUBNET_MONITORING}
     driver_opts:
       com.docker.network.bridge.name: br-monitoring
-
-volumes:
-  nodeexporter:
