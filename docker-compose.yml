@@ -3,7 +3,7 @@ version: '2.4'
 services:
 
   prometheus:
-    image: prom/prometheus:v2.24.0
+    image: prom/prometheus:latest
     container_name: prometheus
     volumes:
       - ./prometheus:/etc/prometheus
@@ -41,7 +41,7 @@ services:
       retries: 3
 
   #alertmanager:
-  #  image: prom/alertmanager:v0.21.0
+  #  image: prom/alertmanager:latest
   #  container_name: alertmanager
   #  volumes:
   #    - ./alertmanager:/etc/alertmanager
@@ -57,7 +57,7 @@ services:
   #    org.label-schema.group: "monitoring"
 
   nodeexporter:
-    image: prom/node-exporter:v1.0.1
+    image: prom/node-exporter:latest
     container_name: nodeexporter
     volumes:
       - /proc:/host/proc:ro
@@ -121,7 +121,7 @@ services:
       retries: 3
 
   grafana:
-    image: grafana/grafana:7.3.6
+    image: grafana/grafana:latest
     container_name: grafana
     volumes:
       - /opt/monitoring/grafana:/var/lib/grafana
@@ -151,7 +151,7 @@ services:
       retries: 3
 
   #pushgateway:
-  #  image: prom/pushgateway:v1.3.1
+  #  image: prom/pushgateway:latest
   #  container_name: pushgateway
   #  restart: on-failure
   #  expose:
@@ -160,7 +160,7 @@ services:
   #    org.label-schema.group: "monitoring"
 
   smartmon:
-    image: galexrt/node-exporter-smartmon
+    image: galexrt/node-exporter-smartmon:latest
     container_name: smartmon
     privileged: true
     restart: on-failure
