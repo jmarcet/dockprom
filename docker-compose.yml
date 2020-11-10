@@ -6,6 +6,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./prometheus:/etc/prometheus
       - /opt/monitoring/prometheus:/prometheus
     command:
@@ -44,6 +45,7 @@ services:
   #  image: prom/alertmanager:latest
   #  container_name: alertmanager
   #  volumes:
+  #    - /etc/localtime:/etc/localtime:ro
   #    - ./alertmanager:/etc/alertmanager
   #  command:
   #    - '--config.file=/etc/alertmanager/config.yml'
@@ -60,6 +62,7 @@ services:
     image: prom/node-exporter:latest
     container_name: nodeexporter
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
@@ -96,6 +99,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.38.6
     container_name: cadvisor
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /:/rootfs:ro
       - /tmp/run:/var/run:rw
       - /tmp/run/docker/containerd/containerd.sock:/run/containerd/containerd.sock:rw
@@ -124,6 +128,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /opt/monitoring/grafana:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
